@@ -65,7 +65,5 @@ class ProductManager {
   console.log("Todos los productos:", productManager.getProducts());
   
   //Busca el producto por ID
-  const productId = 2;
-  const searchProduct = productManager.getProductById(productId);
-  console.log(`Busca el producto con ID ${productId}:`, searchProduct);
+  console.log("Buscar producto por id: ", productManager.getProductById(2))
   
