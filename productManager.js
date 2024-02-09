@@ -118,17 +118,39 @@ productManager.addProduct({
   title: "Tablet Pro",
   description: "Lenovo de 256gb",
   price: 800,
-  thumbnail: "imagen3.jpg",
+  thumbnail: "imagen4.jpg",
   code: "AB004",
   stock: 30
 });
 
+//trata de crear un producto con el mismo codigo de otro producto
+productManager.addProduct({
+  title: "TV LED",
+  description: "55 pulgadas",
+  price: 1800,
+  thumbnail: "imagen5.jpg",
+  code: "AB004",
+  stock: 15
+});
+
+//Crear un producto un campo menos
+productManager.addProduct({
+  title: "TV LED",
+  price: 1800,
+  thumbnail: "imagen5.jpg",
+  code: "AB004",
+  stock: 15
+});
+
+//muestra todos los productos creado
 console.log("Todos los productos:", productManager.getProducts());
 
+//buscar por id
 console.log("Buscar producto por id:", productManager.getProductById(2));
 
+//actualizar producto
 productManager.updateProduct(2, { price: 1600 });
 
-
+//eliminar producto
 productManager.deleteProduct(4);
 console.log("Productos después de eliminar uno:", productManager.getProducts());
