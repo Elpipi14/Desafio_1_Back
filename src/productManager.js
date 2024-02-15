@@ -2,38 +2,44 @@ import fs from "fs"
 
 export class ProductManager {
   constructor() {
-    this.path = 'products.json';
+    this.path = './src/data/products.json';
     this.id = 1;
-  }
+  };
 
   addProduct(product) {
     // Validar que todos los campos sean obligatorios
     if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock) {
-      console.log("Todos los campos son obligatorios");
-      return;
+        console.log("All fields are required");
+        throw new Error("All fields are required");
     }
 
     // Leer productos existentes
     let products = this.getAllFileProducts();
 
+    // Validar que no se repita el campo "code"
+    if (products.some(existingProduct => existingProduct.code === product.code)) {
+        console.log("A product with the same code already exists");
+        throw new Error("A product with the same code already exists");
+    }
+
     // Encontrar el máximo ID actual
     let maxId = products.length > 0 ? Math.max(...products.map(product => product.id)) : 0;
 
-    // Validar que no se repita el campo "code"
-    if (products.some(existingProduct => existingProduct.code === product.code)) {
-      console.log("Ya existe un producto con el mismo código");
-      return;
-    }
-
     // Agregar el producto con id autoincrementable
-    product.id = maxId + 1;
-    products.push(product);
+    const newProduct = {
+        id: maxId + 1,
+        ...product
+    };
+    products.push(newProduct);
 
     // Guardar en archivo
     fs.writeFileSync(this.path, JSON.stringify(products, null, 2));
 
-    console.log("Producto agregado correctamente:", product);
-  }
+    console.log("Product added successfully:", newProduct);
+
+    // Devolver el producto agregado
+    return newProduct;
+};
 
   //lee archivo json
   getAllFileProducts() {
@@ -42,13 +48,13 @@ export class ProductManager {
       return JSON.parse(data) || [];
     } catch (err) {
       return [];
-    }
-  }
+    };
+  };
 
-  //muestra todos los productos
+  //muestra todos los productos 
   getProducts() {
     return this.getAllFileProducts();
-  }
+  };
 
   //busca por id
   getProductById(id) {
@@ -57,9 +63,10 @@ export class ProductManager {
     if (product) {
       return product;
     } else {
-      console.error("Producto no encontrado");
-    }
-  }
+      console.error("Product not found");
+      throw new Error("Product not found");
+    };
+  };
 
   // actualiza productos buscando por id
   updateProduct(id, updatedProduct) {
@@ -68,11 +75,11 @@ export class ProductManager {
     if (index !== -1) {
       products[index] = { ...products[index], ...updatedProduct };
       fs.writeFileSync(this.path, JSON.stringify(products));
-      console.log("Producto actualizado correctamente:", products[index]);
+      console.log("Successfully updated product:", products[index]);
     } else {
-      console.error("Producto no encontrado");
-    }
-  }
+      console.error("Product not found");
+    };
+  };
 
   //elimina el producto
   deleteProduct(id) {
@@ -80,12 +87,12 @@ export class ProductManager {
     const filteredProducts = products.filter(product => product.id !== id);
     if (filteredProducts.length < products.length) {
       fs.writeFileSync(this.path, JSON.stringify(filteredProducts));
-      console.log("Producto eliminado correctamente");
+      console.log("Product removed");
     } else {
-      console.error("Producto no encontrado");
-    }
-  }
-}
+      console.error("Product not found");
+    };
+  };
+};
 
 // Test
 // const productManager = new ProductManager();
